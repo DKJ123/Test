@@ -1,0 +1,145 @@
+.root {
+    -fx-background-color: transparent;
+    -fx-padding: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.45), 10, 0.0, 5, 5);
+}
+
+
+.table-view {
+    -fx-border-width: 0px;
+}
+.table-view .table-column {
+    -fx-border-width: 0;
+}
+.table-view .scroll-bar * {
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
+
+.table-view .column-header-background .filler,
+.table-view .corner, .table-view .column-header {
+    -fx-background-color: transparent;
+}
+.table-view .column-header-background{
+    -fx-background-color: linear-gradient(to bottom, rgb(184, 193, 208), rgb(145, 155, 224));
+    -fx-background-radius: 7px 7px 0px 0px;
+    -fx-padding: 0 0 5px 0;
+}
+
+/*.table-view .column-header,
+.table-view .column-header .filler,
+.table-view .column-header-background .filler {
+    -fx-background-color: linear-gradient(to top, rgb(184, 193, 208), rgb(151, 165, 224));
+    -fx-background-radius: 7 7 0 0;
+    -fx-background-insets: 0 11 0 0;
+
+} */
+.table-view .table-cell {
+    -fx-alignment: center;
+}
+.table-view .table-cell:empty {
+    -fx-background-color: rgba(211, 211, 211, 0.35);
+}
+.table-view .table-cell:empty:hover {
+    -fx-background-color: rgba(211, 211, 211, 0.35);
+}
+
+.table-view .table-cell:hover{
+    -fx-background-color: lightblue;
+}
+.table-view .table-cell:selected {
+    -fx-background-color: lightblue;
+}
+.table-row-cell:odd {
+    -fx-background-color: whitesmoke;
+}
+.table-row-cell:even {
+    -fx-background-color: whitesmoke;
+}
+
+#date-header {
+    -fx-background-color: linear-gradient(to bottom, rgb(184, 193, 208), rgb(145, 155, 224));
+    -fx-background-radius: 5 5 0 0;
+    -fx-border-width: 1 1 0 1;
+    -fx-border-color: black;
+    -fx-border-radius: 5 5 0 0;
+}
+#month-label {
+    -fx-pref-width: 140;
+    -fx-font-family: "Arial", Serif;
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+
+}
+
+#month-button {
+    -fx-background-color: transparent;
+    -fx-font-family: Arial Serif;
+    -fx-font-size: 13;
+    -fx-text-fill: #1f1f1f;
+}
+#month-button:hover {
+    -fx-background-color: rgb(145, 155, 224);
+    -fx-font-family: Arial Serif;
+    -fx-font-size: 13;
+    -fx-text-fill: #1f1f1f;
+}
+#month-button:pressed {
+    -fx-background-color: transparent;
+    -fx-font-family: Arial Serif;
+    -fx-font-size: 13;
+    -fx-text-fill: white;
+}
+
+#date-body {
+    -fx-border-width: 0 1 0 1;
+    -fx-border-color: black;
+}
+#calendar {
+    -fx-background-color: rgb(145, 155, 224);
+    -fx-padding: 5 0 0 0;
+}
+
+#date-footer {
+    -fx-background-color: linear-gradient(to bottom, rgb(184, 193, 208), rgb(145, 155, 224));
+    -fx-background-radius: 0 0 5 5;
+    -fx-border-width: 0 1 1 1;
+    -fx-border-color: black;
+    -fx-border-radius: 0 0 5 5;
+}
+
+#year-button {
+    -fx-pref-width: 100;
+    -fx-background-color: transparent;
+    -fx-font-family: Arial Serif;
+    -fx-font-size: 16;
+    -fx-font-weight: bolder;
+    -fx-label-padding: 0 20 0 20;
+    -fx-opacity: 1.0;
+}
+
+#not-cur-year-button {
+    -fx-pref-width: 60;
+    -fx-background-color: transparent;
+    -fx-font-family: Arial Serif;
+    -fx-font-size: 13;
+    -fx-text-fill: #1f1f1f;
+}
+#not-cur-year-button:hover {
+    -fx-background-color: rgb(145, 155, 224);
+    -fx-font-family: Arial Serif;
+    -fx-font-size: 13;
+    -fx-text-fill: #1f1f1f;
+}
+#not-cur-year-button:pressed {
+    -fx-background-color: transparent;
+    -fx-font-family: Arial Serif;
+    -fx-font-size: 13;
+    -fx-text-fill: white;
+}

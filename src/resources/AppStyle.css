@@ -2,7 +2,7 @@
 /* ORDER -- TOP TO BOTTOM -- */
 .root{
     -fx-effect: dropshadow(two-pass-box, black, 10,0.0,0,0);
-    -fx-border-width: 1;
+    -fx-border-width: 0 0 1 0;
     -fx-border-color: black;
 
 }
@@ -20,9 +20,13 @@
 .menu-bar {
     -fx-background-color: rgba(0, 0, 0, 0);
 }
+#menu:hover {
+    -fx-background-color: rgba(128, 128, 128, 0.36);
+}
 #top-menu {
-    -fx-background-color: linear-gradient(to bottom, lavender 0%, #9f9ff3 10%, lavender 100%);
-
+    -fx-background-color: linear-gradient(to bottom, lavender 0%, #9f9ff3 10%, #c3c3f6 100%);
+    -fx-border-width: 1 1 1 1;
+    -fx-border-color: gray gray black gray;
 }
 
 #close-button {
@@ -40,6 +44,11 @@
     -fx-background-insets: 0 0 0 0;
     -fx-background-radius: 0;
 }
+#close-button:pressed {
+    -fx-background-color: rgba(199, 3, 3, 0.51);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
 #max-button {
     -fx-background-color: rgba(0, 0, 0, 0);
     -fx-background-insets: 0 0 0 0;
@@ -52,6 +61,11 @@
 }
 #max-button:hover {
     -fx-background-color: rgba(217, 207, 207, 0.54);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
+#max-button:pressed {
+    -fx-background-color: rgba(252, 241, 241, 0.54);
     -fx-background-insets: 0 0 0 0;
     -fx-background-radius: 0;
 }
@@ -73,23 +87,32 @@
     -fx-background-insets: 0 0 0 0;
     -fx-background-radius: 0;
 }
+#min-button:pressed {
+    -fx-background-color: rgba(252, 241, 241, 0.54);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
 
 
 #root{
     -fx-background-color: #cecefa;
     -fx-padding: 10;
-
+    -fx-border-color: black;
+    -fx-border-width: 0 1 0 1;
 }
 
 #table-header {
     -fx-background-color: rgb(184, 193, 208);
     -fx-background-radius: 5;
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
     -fx-effect: dropshadow(gaussian, black, 10, 0.0, 4, 2);
 }
 #table-header-label {
-    -fx-font-family: "Times New Roman", Serif;
+    -fx-font-family: "Arial", serif;
     -fx-font-size: 25;
-    -fx-underline: true;
+    -fx-font-weight: bold;
     -fx-label-padding: 0 300 0 5;
     -fx-background-color: linear-gradient(to left, rgb(184, 193, 208), rgb(177, 186, 215));
     -fx-background-radius: 0 5 5 0;
@@ -108,6 +131,7 @@
 #main-table {
     -fx-background-color: whitesmoke;
     -fx-alternative-row-fill-visible: true;
+
 }
 
 #column {
@@ -121,28 +145,118 @@
     -fx-effect: dropshadow(gaussian, black, 9, 0.0, 1, -2);
 }
 
+
+
+
+#combobox {
+    -fx-background-color: lightgray;
+    -fx-background-radius: 15;
+    -fx-border-width: 1;
+    -fx-border-color: black;
+    -fx-border-radius: 15;
+}
+#combobox:hover {
+    -fx-background-color: #dcdcdc;
+    -fx-background-radius: 15;
+    -fx-border-width: 1;
+    -fx-border-color: black;
+    -fx-border-radius: 15;
+    -fx-effect: innershadow(three-pass-box, #ffffff, 5, 0.0, 0, 0);
+}
+#combobox:showing {
+    -fx-background-color: #bdbdbd;
+    -fx-background-radius: 15;
+    -fx-border-width: 1;
+    -fx-border-color: black;
+    -fx-border-radius: 15;
+}
+.combo-box .scroll-bar {
+    -fx-background-color: #dfdffd;
+}
+
+.combo-box .list-view .list-cell {
+    -fx-background-color: lavender;
+}
+.combo-box .list-view .list-cell:hover {
+    -fx-background-color: #bebeef;
+}
+
+#checkbox {
+
+}
+#checkbox:selected {
+    -fx-background-color: lavender;
+    -fx-background-insets: 0 0 0 16;
+    -fx-background-radius: 2 2 0 0;
+}
+#checkbox:selected .box {
+    -fx-background-color: #57abb8;
+}
+#checkbox:selected .mark {
+    -fx-background-color: white;
+}
+
 #sub-menu {
     -fx-background-color: rgb(177, 186, 215);
     -fx-background-radius: 5;
 }
 
+#line-gap {
+    -fx-background-color: linear-gradient(to right, rgb(208, 212, 238) 50%, rgb(177, 186, 215));
+}
+
+
+#select-mode-pane {
+    -fx-padding: 0 0 0 5;
+}
+#sub-menu-button {
+    -fx-background-color: rgb(177, 186, 215);
+
+}
+#sub-menu-button:hover {
+    -fx-background-color: rgba(226, 230, 243, 0.25);
+
+}
+#sub-menu-button:selected {
+    -fx-background-color: rgb(208, 212, 238);
+    -fx-border-width: 0 1 1 1;
+    -fx-border-color: rgb(0, 0, 0);
+}
 #login-box {
-    -fx-background-color: transparent;
+    -fx-background-color: linear-gradient(to top right, rgb(133, 140, 165), rgb(142, 149, 172));
+    -fx-background-radius: 5;
     -fx-border-radius: 5;
     -fx-border-color: black;
     -fx-border-width: 1;
 }
+#user-field {
+
+}
+#pass-field {
+
+}
 
 #date-box {
-    -fx-background-color: transparent;
+    -fx-background-color: linear-gradient(to top right, rgb(133, 140, 165), rgb(142, 149, 172));
     -fx-border-radius: 5;
     -fx-border-color: black;
     -fx-border-width: 1;
+    -fx-background-radius: 5;
+    -fx-padding: 12;
+    -fx-spacing: 10;
+}
+#date-field {
+    -fx-padding: 0 0 0 10;
+    -fx-font-family: "Arial", Serif;
+    -fx-font-size: 14;
 }
 
 #gap {
     -fx-background-color: rgb(177, 186, 215);
     -fx-background-radius: 5;
+}
+#manual-left-bottom-pane {
+    -fx-spacing: 30;
 }
 
 #bottom-pane {
@@ -154,9 +268,63 @@
     -fx-effect: dropshadow(gaussian, black, 10, 0.0, 4, 2);
 }
 
+#excel-label{
+    -fx-font-family: "Arial", serif;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-underline: true;
+}
+
+#bottom-right-top-pane {
+    -fx-background-color: rgb(177, 186, 215);
+    -fx-background-radius: 5;
+    -fx-border-color: black;
+    -fx-border-width: 0 0 2 0;
+}
+
+#color-picker-row {
+    -fx-spacing: 5;
+    -fx-padding: 0 5 0 0;
+}
+#color-picker-pane {
+    -fx-background-color: transparent;
+}
+#color-picker {
+    -fx-background-color: lightgray;
+    -fx-background-radius: 5;
+    -fx-border-width: 1;
+    -fx-border-color: black;
+    -fx-border-radius: 5;
+}
+#color-picker:hover {
+    -fx-background-color: #dcdcdc;
+    -fx-background-radius: 5;
+    -fx-border-width: 1;
+    -fx-border-color: black;
+    -fx-border-radius: 5;
+    -fx-cursor: hand;
+    -fx-effect: innershadow(three-pass-box, #ffffff, 5, 0.0, 0, 0);
+}
+#checkbox-pane {
+    -fx-background-color: transparent;
+    -fx-spacing: 10;
+    -fx-padding: 5 0 0 5;
+    -fx-border-color: rgb(177, 186, 215);
+    -fx-border-width: 0 0 0 0;
+}
+
+#excel-settings-pane {
+    -fx-background-color: linear-gradient(to top right, rgb(133, 140, 165), rgb(142, 149, 172));
+    -fx-spacing: 20;
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
 #bottom-bar-menu {
     -fx-border-color: black;
-    -fx-border-width: 2 0 0 0;
+    -fx-border-width: 2 1 0 1;
     -fx-background-color: #cecefa;
     -fx-padding: 2 0 2 2;
 }
@@ -169,7 +337,7 @@
     -fx-border-width: 1;
     -fx-border-radius: 5;
     -fx-background-radius: 5;
-    -fx-effect: innershadow(three-pass-box, #ffffff, 5, 0.0, 0, 0);
+
 }
 #standard-button:hover {
     -fx-background-color: #dcdcdc;
@@ -196,6 +364,9 @@
     -fx-border-width: 1 2 2 2;
     -fx-border-color: whitesmoke black black whitesmoke;
     -fx-effect: innershadow(three-pass-box, #65b1b4, 20, 0.0, 0, 0);
+    -fx-cursor: hand;
+    -fx-font-family: Arial Serif;
+    -fx-font-size: 14;
 }
 #bottom-button-lowered:hover{
     -fx-background-color: #96c3ec;
@@ -203,13 +374,19 @@
     -fx-border-width: 2;
     -fx-border-color: black lightgray lightgray black;
     -fx-underline: true;
+    -fx-cursor: hand;
+    -fx-font-family: Arial Serif;
+    -fx-font-size: 14;
 }
-#bottom-button-lowered:focused{
+#bottom-button-lowered:selected{
     -fx-background-color: #96c3ec;
     -fx-border-insets: 0;
     -fx-border-width: 2;
     -fx-border-color: black lightgray lightgray black;
     -fx-underline: true;
+    -fx-cursor: hand;
+    -fx-font-family: Arial Serif;
+    -fx-font-size: 14;
 }
 
 /* LABELS */

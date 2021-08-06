@@ -3,23 +3,25 @@ package org.openjfx;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Cursor;
+import javafx.geometry.*;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
+import javafx.application.Preloader;
 import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import Excel.*;
 
 
 /**
@@ -29,6 +31,8 @@ public class App extends Application {
     // -- WINDOW DRAG & RESIZE VARIABLES --
     private static double xOffset = 0;
     private static double yOffset = 0;
+    private String dateToString;
+    private String dateFromString;
 
 
 
@@ -86,24 +90,168 @@ public class App extends Application {
     }
 
     // -- BUTTON ACTIONS --
-    public void importButtonAction(ActionEvent e, Stage stage) { //curFileTable, importField också
+    public void importButtonAction(ActionEvent e, Stage stage, TableView table, TextField field) { //curFileTable, importField också
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource file");
+        File initDir = new File("C:/Users/de3948/OneDrive - MAX Burgers AB/Desktop/Statistik/");
+        fileChooser.setInitialDirectory(initDir);
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel files", "*.xlsx"));
+        table.getItems().removeAll(table.getItems());
 
         try {
             File selectedFile = fileChooser.showOpenDialog(stage);
             String path = selectedFile.getAbsolutePath();
-            System.out.println(path);
-            //filemanager.getFile(path);
+            field.setText(path);
+            ReadFile read = new ReadFile();
+            String allValues = read.file(path);
+            StringBuilder sb = new StringBuilder();
+            String[] split = allValues.split(";");
+            String headers = split[0];
+            for(int i = 0; i < split.length; i++) {
+                if(i == 0) {
+                    continue;
+                } else {
+                    sb.append(split[i]).append(";");
+                }
+            }
+
+            String[] header = headers.split(",");
+            int i = 0;
+            for(String headerValue : header) {
+                TableColumn<CurrentFileValues, String> column = (TableColumn<CurrentFileValues, String>) table.getColumns().get(i);
+                column.setText(headerValue);
+                table.getColumns().remove(i);
+                table.getColumns().add(i, column);
+                if(i == 4) {
+                    break;
+                }
+                i++;
+            }
+
+            allValues = sb.toString();
+
+            AddToTable add = new AddToTable();
+            add.addToTable(table, allValues);
         }catch(NullPointerException ex) {
             System.out.println("no file selected");
 
         }
+    }
+    public void dateFromButtonAction(ActionEvent e, Stage stage, TextField field) {
+        Node node = stage.getScene().getFocusOwner();
+        Point2D point = node.localToScreen(0,0);
+        NewWindow dateWindow = new NewWindow();
+        dateWindow.initDateWindow(point, field);
+    }
+    public void dateToButtonAction(ActionEvent e, Stage stage, TextField field) {
+        Node node = stage.getScene().getFocusOwner();
+        Point2D point = node.localToScreen(0,0);
+        NewWindow dateWindow = new NewWindow();
+        dateWindow.initDateWindow(point, field);
+    }
+    public void generateFileButtonAction(ActionEvent e, TableView table) {
+        System.out.println("this is generate button 1!");
+    }
+    public void generateFileButton2Action(ActionEvent e, TableView table) {
+        table.getItems().removeAll(table.getItems());
+    }
+    public void manualModeButtonAction(ActionEvent e, VBox leftBottomPane, HBox leftBottom, HBox manualLeftBottom,
+                                       VBox generateButtonPane, Button generateButton1, Button generateButton2) {
+        try {
+            int index = leftBottomPane.getChildren().indexOf(leftBottom);
+            leftBottomPane.getChildren().remove(leftBottom);
+            leftBottomPane.getChildren().add(index, manualLeftBottom);
 
+            int index1 = generateButtonPane.getChildren().indexOf(generateButton1);
+            generateButtonPane.getChildren().remove(generateButton1);
+            generateButtonPane.getChildren().add(index1, generateButton2);
+        }catch (IllegalArgumentException ex) {
 
+        }
+    }
+    public void automatedModeButtonAction(ActionEvent e, VBox leftBottomPane, HBox leftBottom, HBox manualLeftBottom,
+                                          VBox generateButtonPane, Button generateButton1, Button generateButton2) {
+        try {
+            int index = leftBottomPane.getChildren().indexOf(manualLeftBottom);
+            leftBottomPane.getChildren().remove(manualLeftBottom);
+            leftBottomPane.getChildren().add(index, leftBottom);
+
+            int index1 = generateButtonPane.getChildren().indexOf(generateButton2);
+            generateButtonPane.getChildren().remove(generateButton2);
+            generateButtonPane.getChildren().add(index1, generateButton1);
+        }catch(IllegalArgumentException ex) {
+
+        }
     }
 
+    public void copyAndPasteButtonAction(ActionEvent e, Stage stage, TableView table, TextField field) {
+        Node node = stage.getScene().getFocusOwner();
+        Point2D point = node.localToScreen(0,0);
+        NewWindow textAreaWindow = new NewWindow();
+        textAreaWindow.initTextAreaWindow(point, table, field);
+
+    }
+    public void fromExcelButtonAction(ActionEvent e, Stage stage, TableView table, TextField field) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Generate from");
+        File initDir = new File("C:/Users/de3948/OneDrive - MAX Burgers AB/Desktop/Statistik/");
+        fileChooser.setInitialDirectory(initDir);
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel files", "*.xlsx", "*.xls"));
+        File newFile = fileChooser.showOpenDialog(stage);
+        String path = newFile.getAbsolutePath();
+        StringBuilder sb = new StringBuilder();
+        HashMap<String, Integer> newValuesHashMap = new HashMap<>();
+        HashMap<String, Integer> oldValuesHashMap = new HashMap<>();
+
+        NewWindow n = new NewWindow();
+        List<String> restaurantList = n.restaurantList();
+
+        ReadFile read = new ReadFile();
+        List<String> allValuesList = read.getValuesFromFile(path, restaurantList);
+        List<String> sortedRestaurantList = restaurantList.stream().sorted().collect(Collectors.toList());
+
+        for (String rest : sortedRestaurantList) {
+            int occurrences = Collections.frequency(allValuesList, rest);
+            newValuesHashMap.put(rest, occurrences);
+        }
+
+        ReadFile file = new ReadFile();
+        String path1 = field.getText();
+        String curWeekValues = file.getCurWeekValues(path1);
+
+        String[] curSplit = curWeekValues.split(";");
+
+        for(String curVal : curSplit) {
+            String[] curSplit2 = curVal.split(",");
+            String rest = curSplit2[0];
+            String valueString = curSplit2[2];
+            int value = Integer.parseInt(valueString);
+
+            oldValuesHashMap.put(rest, value);
+        }
+
+        for (String rest : oldValuesHashMap.keySet()) {
+            sb.append(rest).append(",").append(oldValuesHashMap.get(rest)).append(",").append(newValuesHashMap.get(rest)
+            ).append(",").append("temp").append(",").append("temp").append(";");
+        }
+
+        String allValues = sb.toString();
+        AddToTable add = new AddToTable();
+        add.addToNewTable(table, allValues);
+    }
+    public void saveButtonAction(ActionEvent e, TableView table, Stage stage) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save file");
+        File initDir = new File("C:/Users/de3948/OneDrive - MAX Burgers AB/Desktop/Statistik/");
+        fileChooser.setInitialDirectory(initDir);
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel files", "*.xlsx"));
+        File newFile = fileChooser.showSaveDialog(stage);
+        String path = newFile.getAbsolutePath();
+        System.out.println(path);
+        SaveFile save = new SaveFile();
+        save.saveFile(table, path);
+
+    }
     //-- BOTTOM MENU BUTTON ACTIONS --
 
 
@@ -131,9 +279,13 @@ public class App extends Application {
     // -- START APPLICATION --
     @Override
     public void start(Stage primaryStage) {
-        ComponentCustomization init = new ComponentCustomization();
+        AppComponents init = new AppComponents();
+        init.setColorpickers();
         init.setShapes();
+        init.setMenuBar();
         init.setImages();
+        init.setMenu();
+        init.setMenuItems();
         init.setPanes();
         init.setButtons();
         init.setLabels();
@@ -141,8 +293,11 @@ public class App extends Application {
         init.setTextfields();
         init.setComboboxes();
         init.setTableColumns();
+        init.setNewTableColumns();
         init.setTables();
-        init.setPrimaryStage(primaryStage);
+        init.setNewFileTable();
+
+
 
         //Buttons
         //-- importButton --
@@ -162,11 +317,11 @@ public class App extends Application {
         //-- saveButton --
         Button saveButton = init.getSaveButton();
         //-- bottomMenuButtonMaxNews --
-        Button bottomMenuButtonMaxNews = init.getBottomMenuButtonMaxNews();
+        ToggleButton bottomMenuButtonMaxNews = init.getBottomMenuButtonMaxNews();
         //-- bottomMenuButtonWeekly --
-        Button bottomMenuButtonWeekly = init.getBottomMenuButtonWeekly();
+        ToggleButton bottomMenuButtonWeekly = init.getBottomMenuButtonWeekly();
         //-- bottomMenuButtonDaily --
-        Button bottomMenuButtonDaily = init.getBottomMenuButtonDaily();
+        ToggleButton bottomMenuButtonDaily = init.getBottomMenuButtonDaily();
         //-- closeButton --
         Button closeButton = init.getCloseButton();
         //-- maximizeButton --
@@ -180,10 +335,17 @@ public class App extends Application {
         Label prevWeekLabel = init.getPrevWeekLabel();
         Label curWeekLabel = init.getCurWeekLabel();
         Label loginLabel = init.getLoginLabel();
+        Label excelSettingsLabel = init.getExcelSettingsLabel();
+        Label headerColorpickerLabel = init.getExcelHeaderColorpickerLabel();
+        Label cellColorpickerLabel = init.getExcelCellColorpickerLabel();
         Label windowLabel = init.getWindowLabel();
         //maybe
         Label dateFromLabel = init.getDateFromLabel();
         Label dateToLabel = init.getDateToLabel();
+
+        // -- ColorPickers --
+        ColorPicker excelHeaderColorpicker = init.getHeaderColorPicker();
+        ColorPicker excelCellColorpicker = init.getCellColorPicker();
 
         // -- Images --
         ImageView view = init.getView();
@@ -197,12 +359,18 @@ public class App extends Application {
         //-- Checkboxes --
         CheckBox topFiveCheckbox = init.getTopFiveCheckbox();
         CheckBox topFiveMultipleCheckbox = init.getTopFiveMultipleCheckbox();
+        CheckBox restaurantsZeroCheckbox = init.getRestaurantsZeroCheckbox();
+        CheckBox onlyImportantColumnsCheckbox = init.getOnlyImportantColumnsCheckbox();
+        CheckBox excelVerticalGridLinesCheckbox = init.getExcelVerticalGridLinesCheckbox();
+        CheckBox excelHorizontalGridLinesCheckbox = init.getExcelHorizontalGridLinesCheckbox();
 
         //-- Text fields --
         TextField importField = init.getImportField();
         TextField userField = init.getUserField();
         TextField dateFromField = init.getDateFromField();
         TextField dateToField = init.getDateToField();
+
+
         //-- Password fields --
         PasswordField passField = init.getPassField();
 
@@ -212,16 +380,8 @@ public class App extends Application {
         ComboBox<String> sortByMenu = init.getSortByMenu();
         ComboBox<String> sortByOrderMenu = init.getSortByOrderMenu();
 
-        //-- Tables --
-        TableView<String> curFileTable = init.getCurFileTable();
-        TableView<String> newFileTable = init.getNewFileTable();
 
-        //-- Table columns --
-        TableColumn restColumn = init.getRestColumn();
-        TableColumn prevWeekColumn = init.getPrevWeekColumn();
-        TableColumn curWeekColumn = init.getCurWeekColumn();
-        TableColumn changeColumn = init.getChangeColumn();
-        TableColumn percentageColumn = init.getPercentageColumn();
+
 
         //-- Menu bar --
         MenuBar menubar = init.getMenubar();
@@ -302,8 +462,8 @@ public class App extends Application {
 
         //Vbox as gap
         VBox gap = new VBox();
-        gap.setPrefSize(640, 30);
-        gap.setId("gap");
+        gap.setPrefSize(640, 3);
+        gap.setId("line-gap");
 
         //Date selection Vbox & generateButton pane Hbox
         HBox dateFrom = new HBox();
@@ -317,10 +477,7 @@ public class App extends Application {
         VBox dateSelection = new VBox();
         dateSelection.setPrefSize(220, 70);
         dateSelection.setMaxHeight(100);
-        dateSelection.setShape(init.getDateMenuShape());
         dateSelection.setId("date-box");
-        dateSelection.setSpacing(10);
-        dateSelection.setPadding(new Insets(12));
         dateSelection.setAlignment(Pos.CENTER);
         dateSelection.getChildren().addAll(dateFrom, dateTo);
 
@@ -339,28 +496,42 @@ public class App extends Application {
         loginPane.setAlignment(Pos.CENTER_LEFT);
         loginPane.getChildren().addAll(loginLabel, loginFieldsPane);
 
+        // mode select pane
+        HBox selectModePane = new HBox();
+        selectModePane.setPrefSize(640, 40);
+        selectModePane.getChildren().addAll(init.getManualModeButton(), init.getAutomatedModeButton());
+        selectModePane.setAlignment(Pos.TOP_LEFT);
+        selectModePane.setId("select-mode-pane");
+
         //bottom of LeftBottomPane
         HBox leftBottom = new HBox();
         leftBottom.setPrefSize(640, 150);
-        leftBottom.setAlignment(Pos.CENTER_LEFT);
+        leftBottom.setAlignment(Pos.TOP_CENTER);
         leftBottom.setSpacing(20);
-        leftBottom.setPadding(init.getLeftGap());
         leftBottom.setId("sub-menu");
         leftBottom.getChildren().addAll(dateSelection, loginPane);
+        init.setLeftBottom(leftBottom);
+
+        //manual mode leftBottomPane
+        HBox manualLeftBottom = new HBox();
+        manualLeftBottom.setPrefSize(640, 150);
+        manualLeftBottom.setAlignment(Pos.CENTER);
+        manualLeftBottom.setId("manual-left-bottom-pane");
+        manualLeftBottom.getChildren().addAll(init.getCopyAndPasteButton(), init.getFromExcelButton());
+        init.setManualLeftBottom(manualLeftBottom);
 
         // generateButton VBOX
         VBox generateButtonPane = new VBox();
-        generateButtonPane.getChildren().add(generateFileButton);
+        generateButtonPane.getChildren().addAll(init.getGenerateFileButton2());
         generateButtonPane.setPadding(new Insets(0, 30, 0, 0));
         generateButtonPane.setAlignment(Pos.TOP_RIGHT);
-
+        init.setGenerateButtonPane(generateButtonPane);
 
         //left table Vbox
         VBox leftTable = new VBox();
-        leftTable.setBorder(init.getBlackSharp());
         leftTable.setId("table-header");
-        leftTable.getChildren().addAll(curFileLabel, curFileTable, importPane);
-        VBox.setVgrow(curFileTable, Priority.ALWAYS);
+        leftTable.getChildren().addAll(curFileLabel, init.getCurFileTable(), importPane);
+        VBox.setVgrow(init.getCurFileTable(), Priority.ALWAYS);
         VBox.setVgrow(importPane, Priority.NEVER);
 
         //left bottom Vbox
@@ -368,7 +539,8 @@ public class App extends Application {
         leftBottomPane.setPrefSize(640, 300);
         leftBottomPane.setId("bottom-pane");
         leftBottomPane.setAlignment(Pos.TOP_RIGHT);
-        leftBottomPane.getChildren().addAll(weekSelectPane, gap, leftBottom, generateButtonPane);
+        leftBottomPane.getChildren().addAll(weekSelectPane, gap, selectModePane, manualLeftBottom, generateButtonPane);
+        init.setLeftBottomPane(leftBottomPane);
 
 
         //add to panes -- RIGHT SIDE
@@ -384,34 +556,74 @@ public class App extends Application {
 
         //right table Vbox
         VBox rightTable = new VBox();
-        rightTable.setBorder(init.getBlackSharp());
         rightTable.setId("table-header");
-        rightTable.getChildren().addAll(newFileLabel, newFileTable, sortPane);
-        VBox.setVgrow(newFileTable, Priority.ALWAYS);
+        rightTable.getChildren().addAll(newFileLabel, init.getNewFileTable(), sortPane);
+        VBox.setVgrow(init.getNewFileTable(), Priority.ALWAYS);
         VBox.setVgrow(sortPane, Priority.NEVER);
 
-        // -- VBOX AS GAP --
-        HBox rightGap = new HBox();
-        rightGap.setPrefSize(640, 30);
-        rightGap.setId("gap");
+        // -- EXCEL SETTINGS RIGHT PANE --
+        HBox excelSettingsHeading = new HBox();
+        excelSettingsHeading.setPrefSize(640, 50);
+        excelSettingsHeading.setMaxHeight(50);
+        excelSettingsHeading.setAlignment(Pos.CENTER);
+        excelSettingsHeading.setId("bottom-right-top-pane");
+        excelSettingsHeading.getChildren().add(excelSettingsLabel);
 
-        HBox rightGap2 = new HBox();
-        rightGap2.setPrefSize(640, 150);
-        rightGap2.setId("gap");
+        // -- color picker row one --
+        HBox colorpickerLabelpane = new HBox();
+        colorpickerLabelpane.setPrefSize(200, 30);
+        colorpickerLabelpane.setAlignment(Pos.CENTER_RIGHT);
+        colorpickerLabelpane.setId("color-picker-row");
+        colorpickerLabelpane.getChildren().addAll(headerColorpickerLabel, excelHeaderColorpicker);
+        // -- color picker row two --
+        HBox colorpickerLabelpane2 = new HBox();
+        colorpickerLabelpane2.setPrefSize(200, 30);
+        colorpickerLabelpane2.setAlignment(Pos.CENTER_RIGHT);
+        colorpickerLabelpane2.setId("color-picker-row");
+        colorpickerLabelpane2.getChildren().addAll(cellColorpickerLabel, excelCellColorpicker);
+
+        // -- color picker rows in a vBox --
+        VBox colorpickersPane = new VBox();
+        colorpickersPane.setPrefSize(250, 250);
+        colorpickersPane.setAlignment(Pos.TOP_RIGHT);
+        colorpickersPane.setId("color-picker-pane");
+        colorpickersPane.getChildren().addAll(colorpickerLabelpane, colorpickerLabelpane2);
+
+        // -- Excel settings checkbox pane --
+        VBox excelSettingsCheckboxPane = new VBox();
+        excelSettingsCheckboxPane.setPrefSize(250, 250);
+        excelSettingsCheckboxPane.setAlignment(Pos.TOP_LEFT);
+        excelSettingsCheckboxPane.setId("checkbox-pane");
+        excelSettingsCheckboxPane.getChildren().addAll(restaurantsZeroCheckbox, onlyImportantColumnsCheckbox,
+                excelHorizontalGridLinesCheckbox, excelVerticalGridLinesCheckbox);
+
+        // -- Right-bottom-middle pane --
+        HBox excelSettings = new HBox();
+        excelSettings.setPrefSize(490, 110);
+        excelSettings.setMaxSize(490, 300);
+        excelSettings.setAlignment(Pos.CENTER_LEFT);
+        excelSettings.setId("excel-settings-pane");
+        excelSettings.getChildren().addAll(excelSettingsCheckboxPane, colorpickersPane);
+
+        // -- right gap --
+        VBox rightGap = new VBox();
+        rightGap.setPrefSize(640, 40);
+        rightGap.setId("gap");
 
         //save pane
         HBox savePane = new HBox();
-        savePane.setPrefSize(640, 50);
-        savePane.setAlignment(Pos.CENTER_RIGHT);
-        savePane.setSpacing(10);
+        savePane.setPrefSize(640, 100);
+        savePane.setAlignment(Pos.BOTTOM_RIGHT);
+        savePane.setPadding(new Insets(0, 30, 15, 0));
         savePane.setId("sub-menu");
         savePane.getChildren().add(saveButton);
 
         //right bottom pane
         VBox rightBottomPane = new VBox();
         rightBottomPane.setPrefSize(640, 300);
+        rightBottomPane.setAlignment(Pos.TOP_CENTER);
         rightBottomPane.setId("bottom-pane");
-        rightBottomPane.getChildren().addAll(rightGap, rightGap2, savePane);
+        rightBottomPane.getChildren().addAll(excelSettingsHeading, rightGap, excelSettings, savePane);
 
 
 
@@ -470,7 +682,7 @@ public class App extends Application {
 
         // -- SET SCENE --
         Scene scene = new Scene(mainStage, 1280, 830);
-        scene.getStylesheets().add("CSSfile.css");
+        scene.getStylesheets().add("AppStyle.css");
 
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
@@ -483,11 +695,11 @@ public class App extends Application {
         primaryStage.setMinWidth(1280);
         ResizeHelper.addResizeListener(primaryStage);
         primaryStage.show();
+        init.setPrimaryStage(primaryStage);
+    }
 
-        System.out.println("root width = " + root.getWidth());
-        System.out.println("top width = " + top.getWidth());
-        System.out.println("bottom width = " + bottomMenu.getWidth());
-        System.out.println("stage width = " + primaryStage.getWidth());
+    public void setDateFromString(String date) {
+        this.dateFromString = date;
     }
 
     public static void main(String[] args) {

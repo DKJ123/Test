@@ -1,0 +1,68 @@
+#close-button {
+    -fx-background-color: rgba(0, 0, 0, 0);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
+#close-button:focused {
+    -fx-background-color: rgba(0, 0, 0, 0);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
+#close-button:hover {
+    -fx-background-color: rgba(255, 0, 0, 0.51);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
+#close-button:pressed {
+    -fx-background-color: rgba(199, 3, 3, 0.51);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
+#max-button {
+    -fx-background-color: rgba(0, 0, 0, 0);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
+#max-button:focused{
+    -fx-background-color: rgba(0, 0, 0, 0);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
+#max-button:hover {
+    -fx-background-color: rgba(217, 207, 207, 0.54);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
+#max-button:pressed {
+    -fx-background-color: rgba(252, 241, 241, 0.54);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
+#rectangle {
+    -fx-fill: rgba(0, 0, 0, 0);
+}
+#min-button {
+    -fx-background-color: rgba(0, 0, 0, 0);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
+#min-button:focused{
+    -fx-background-color: rgba(0, 0, 0, 0);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
+#min-button:hover {
+    -fx-background-color: rgba(217, 207, 207, 0.54);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
+#min-button:pressed {
+    -fx-background-color: rgba(252, 241, 241, 0.54);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0;
+}
+
+
+#done-button {
+    -fx-background-color: green;
+}
