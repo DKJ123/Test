@@ -1,5 +1,6 @@
 package org.openjfx;
 
+import Email.SendEmail;
 import Excel.AddToTable;
 import Excel.ReadFile;
 import javafx.beans.value.ChangeListener;
@@ -24,6 +25,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import javax.swing.*;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.text.CharacterIterator;
@@ -309,6 +311,105 @@ public class NewWindow {
         textArea.setText(sb1.toString());
     }
 
+    // -- HELPWINDOW SIDE MENU BUTTON ACTIONS --
+    public void sideMenuButtonActions(ActionEvent e, TextArea textArea, String manualMode, String copyPaste, String fromExcel, String automatedMode
+    , VBox box, ToggleButton copyNpasteButton, ToggleButton fromExcelButton, ToggleButton manualModeButton, ToggleButton automatedModeButton) {
+        ToggleButton button = (ToggleButton) e.getSource();
+        String buttonText = button.getText();
+
+
+
+
+        if (buttonText.equals("Manual mode")) {
+            int index = box.getChildren().indexOf(button);
+            int copyNpasteButtonIndex = index + 1;
+            int fromExcelButtonIndex = copyNpasteButtonIndex + 1;
+            textArea.setText(manualMode);
+            try {
+                box.getChildren().add(copyNpasteButtonIndex, copyNpasteButton);
+                box.getChildren().add(fromExcelButtonIndex, fromExcelButton);
+            }catch(IllegalArgumentException ex) {
+                box.getChildren().remove(copyNpasteButton);
+                box.getChildren().remove(fromExcelButton);
+            }
+            button.setSelected(true);
+            copyNpasteButton.setSelected(false);
+            fromExcelButton.setSelected(false);
+            automatedModeButton.setSelected(false);
+        } else if (buttonText.equals("Copy and paste")) {
+            textArea.setText(copyPaste);
+            button.setSelected(true);
+            manualModeButton.setSelected(true);
+            fromExcelButton.setSelected(false);
+            automatedModeButton.setSelected(false);
+        } else if (buttonText.equals("From excel")) {
+            textArea.setText(fromExcel);
+            button.setSelected(true);
+            manualModeButton.setSelected(true);
+            copyNpasteButton.setSelected(false);
+            automatedModeButton.setSelected(false);
+        } else if (buttonText.equals("Automated mode")) {
+            textArea.setText(automatedMode);
+            button.setSelected(true);
+            manualModeButton.setSelected(false);
+            fromExcelButton.setSelected(false);
+            copyNpasteButton.setSelected(false);
+        }
+    }
+
+    // -- CONTACT WINDOW ACTIONS --
+    public void sendButtonAction(ActionEvent e, TextField nameField, TextField subjectField, TextArea message, Label mailSentLabel, HBox box) {
+        String name = nameField.getText();
+        String subject = subjectField.getText();
+        String mailMessage = message.getText();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(mailMessage).append("\n").append(name);
+
+        mailMessage = sb.toString();
+
+        SendEmail mail = new SendEmail();
+        mail.sendEmail(mailMessage, subject);
+
+        String loading1 = "Sending E-mail.";
+        String loading2 = "Sending E-mail..";
+        String loading3 = "Sending E-mail...";
+        String loading4 = "Sending E-mail....";
+        String loading5 = "Sending E-mail.....";
+        String mailSent = "E-mail sent!";
+
+        box.getChildren().add(mailSentLabel);
+        mailSentLabel.setText(mailSent);
+
+    }
+
+    // -- INBOX WINDOW ACTIONS --
+    public void inboxItemClicked(ActionEvent e, List<ToggleButton> buttonList, Label messageFromLabel, Label subjectLabelReal, Label dateLabelReal, TextArea message) {
+        ToggleButton button = (ToggleButton) e.getSource();
+        VBox box = (VBox) button.getGraphic();
+        Label fromLabel = (Label) box.getChildren().get(0);
+        HBox subjectAndDateLine = (HBox) box.getChildren().get(1);
+        Label subjectLabel = (Label) subjectAndDateLine.getChildren().get(0);
+        Label dateLabel = (Label) subjectAndDateLine.getChildren().get(1);
+        Label messageLabel = (Label) box.getChildren().get(2);
+
+        messageFromLabel.setText("From: " + fromLabel.getText());
+        subjectLabelReal.setText(subjectLabel.getText());
+        dateLabelReal.setText(dateLabel.getText());
+        message.setText(messageLabel.getText());
+
+        for(ToggleButton btn : buttonList) {
+            btn.setSelected(false);
+            if(btn.equals(button)) {
+                button.setSelected(true);
+            }
+        }
+
+
+
+
+
+    }
 
     public NewWindow() {
 
@@ -380,10 +481,6 @@ public class NewWindow {
         stage.initStyle(StageStyle.UNDECORATED);
         stage.initStyle(StageStyle.TRANSPARENT);
 
-
-
-
-
         stage.setScene(dateWindow);
         stage.getScene().setFill(null);
         stage.getScene().getRoot().setId("window");
@@ -413,10 +510,10 @@ public class NewWindow {
         HBox.setHgrow(topWindowMenu, Priority.ALWAYS);
 
         HBox doneButtonPane = new HBox();
-        doneButtonPane.setPrefSize(550, 30);
-        doneButtonPane.setMaxHeight(30);
+        doneButtonPane.setPrefSize(550, 50);
+        doneButtonPane.setMaxHeight(50);
         doneButtonPane.setId("done-button-pane");
-        doneButtonPane.setAlignment(Pos.BOTTOM_CENTER);
+        doneButtonPane.setAlignment(Pos.CENTER);
         doneButtonPane.getChildren().addAll(init.getDoneButton());
         HBox.setHgrow(doneButtonPane, Priority.ALWAYS);
 
@@ -434,8 +531,186 @@ public class NewWindow {
         stage.setX(point.getX());
         stage.setScene(scene);
         ResizeHelper.addResizeListener(stage);
+        stage.getScene().setFill(null);
         init.setStage(stage);
         stage.show();
+    }
+
+    public void initHelpWindow(Point2D point) {
+        newWindowComponents init = new newWindowComponents();
+        EventHandler<MouseEvent> screenDrag = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                dragWindowEvent(mouseEvent, init.getStage());
+            }
+        };
+
+        HBox topWindowMenu = new HBox();
+        topWindowMenu.setPrefSize(550, 30);
+        topWindowMenu.setId("top-window-menu");
+        topWindowMenu.setAlignment(Pos.CENTER_RIGHT);
+        topWindowMenu.getChildren().addAll(init.getMinimizeButton(), init.getMaximizeButton(), init.getCloseButton());
+        topWindowMenu.addEventFilter(MouseEvent.MOUSE_PRESSED, screenDrag);
+        topWindowMenu.addEventFilter(MouseEvent.MOUSE_DRAGGED, screenDrag);
+
+        VBox helpWindowSideMenu = new VBox();
+        helpWindowSideMenu.setPrefSize(140, 670);
+        helpWindowSideMenu.setId("help-side-menu");
+        helpWindowSideMenu.getChildren().addAll(init.getManualModeButtonHelp(), init.getAutomatedModeButtonHelp());
+        init.setLeftMenuPane(helpWindowSideMenu);
+
+
+        VBox helpWindowMainContent = new VBox();
+        helpWindowMainContent.setPrefSize(600, 670);
+        helpWindowMainContent.setId("help-main-content");
+        helpWindowMainContent.getChildren().addAll(init.getHelpTextArea());
+
+
+        BorderPane main = new BorderPane();
+        main.setTop(topWindowMenu);
+        main.setLeft(helpWindowSideMenu);
+        main.setCenter(helpWindowMainContent);
+        main.setId("main");
+
+
+        Scene scene = new Scene(main);
+        scene.getStylesheets().addAll("helpWindowStyle.css");
+
+        Stage stage = new Stage();
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setScene(scene);
+        stage.getScene().setFill(null);
+        init.setStage(stage);
+        stage.show();
+    }
+
+    public void initContactWindow(Point2D point) {
+        newWindowComponents init = new newWindowComponents();
+        EventHandler<MouseEvent> screenDrag = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                dragWindowEvent(mouseEvent, init.getStage());
+            }
+        };
+
+        HBox topWindowMenu = new HBox();
+        topWindowMenu.setPrefSize(500, 30);
+        topWindowMenu.setId("top-window-menu");
+        topWindowMenu.setAlignment(Pos.CENTER_RIGHT);
+        topWindowMenu.getChildren().addAll(init.getMinimizeButton(), init.getMaximizeButton(), init.getCloseButton());
+        topWindowMenu.addEventFilter(MouseEvent.MOUSE_PRESSED, screenDrag);
+        topWindowMenu.addEventFilter(MouseEvent.MOUSE_DRAGGED, screenDrag);
+
+
+        VBox main = new VBox();
+        main.setPrefSize(500, 500);
+        main.setId("contact-main-pane");
+        main.getChildren().addAll(init.getMailFromField(), init.getMailSubject(), init.getMessageTextArea());
+
+        HBox sendButtonPane = new HBox();
+        sendButtonPane.setPrefSize(500, 60);
+        sendButtonPane.setId("send-button-pane");
+        sendButtonPane.setAlignment(Pos.CENTER_RIGHT);
+        sendButtonPane.getChildren().add(init.getSendButton());
+        init.setSendButtonPane(sendButtonPane);
+
+
+        BorderPane mainPane = new BorderPane();
+        mainPane.setTop(topWindowMenu);
+        mainPane.setCenter(main);
+        mainPane.setBottom(sendButtonPane);
+
+        Scene scene = new Scene(mainPane);
+        scene.getStylesheets().add("contactWindowStyle.css");
+
+        Stage stage = new Stage();
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setScene(scene);
+        stage.getScene().setFill(null);
+        init.setStage(stage);
+        stage.show();
+
+    }
+
+    public void initMailInboxWindow(Point2D point, List<VBox> vBoxes) {
+        newWindowComponents init = new newWindowComponents();
+        List<ToggleButton> buttonList = new ArrayList<>();
+        EventHandler<MouseEvent> screenDrag = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                dragWindowEvent(mouseEvent, init.getStage());
+            }
+        };
+
+        HBox topWindowMenu = new HBox();
+        topWindowMenu.setPrefSize(500, 30);
+        topWindowMenu.setId("top-window-menu");
+        topWindowMenu.setAlignment(Pos.CENTER_RIGHT);
+        topWindowMenu.getChildren().addAll(init.getMinimizeButton(), init.getMaximizeButton(), init.getCloseButton());
+        topWindowMenu.addEventFilter(MouseEvent.MOUSE_PRESSED, screenDrag);
+        topWindowMenu.addEventFilter(MouseEvent.MOUSE_DRAGGED, screenDrag);
+
+        EventHandler<ActionEvent> inboxItemClick = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                inboxItemClicked(event, buttonList, init.getMailFromLabel(), init.getSubjectLabel(), init.getDateLabel(), init.getInboxMessage());
+
+            }
+        };
+
+        VBox inboxSideMenu = new VBox();
+        inboxSideMenu.setPrefSize(210, 670);
+        inboxSideMenu.setId("inbox-side-menu");
+        inboxSideMenu.getChildren().add(init.getInboxLabel());
+
+        for (VBox mail : vBoxes) {
+            Label fromLabel = (Label) mail.getChildren().get(0);
+            String[] fromSplit = fromLabel.getText().split("<");
+            String[] fromSplit2 = fromSplit[1].split(">");
+            System.out.println(fromSplit2[0]);
+
+            fromLabel.setText(fromSplit2[0]);
+
+            ToggleButton button1 = new ToggleButton();
+            button1.setPrefSize(200, 60);
+            button1.setId("inbox-button");
+            button1.setGraphic(mail);
+            button1.addEventFilter(ActionEvent.ACTION, inboxItemClick);
+            buttonList.add(button1);
+            inboxSideMenu.getChildren().add(button1);
+        }
+
+        ScrollPane scrollPane = new ScrollPane(inboxSideMenu);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setId("inbox-scrollpane");
+
+        VBox mailMessagePane = new VBox();
+        mailMessagePane.setPrefSize(500, 670);
+        mailMessagePane.setId("mail-message-pane");
+        mailMessagePane.setAlignment(Pos.CENTER_LEFT);
+        mailMessagePane.getChildren().addAll(init.getMailFromLabel(), init.getSubjectLabel(), init.getDateLabel(), init.getInboxMessage());
+
+        BorderPane main = new BorderPane();
+        main.setTop(topWindowMenu);
+        main.setLeft(scrollPane);
+        main.setCenter(mailMessagePane);
+
+
+        Scene scene = new Scene(main);
+        scene.getStylesheets().add("mailInboxStyle.css");
+
+        Stage stage = new Stage();
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setScene(scene);
+        stage.getScene().setFill(null);
+        init.setStage(stage);
+        stage.show();
+
+
     }
 
 

@@ -7,6 +7,10 @@ module org.openjfx {
     requires poi.ooxml;
     requires java.desktop;
     requires poi.ooxml.schemas;
+    requires java.mail;
+    requires quartz;
+    requires commons.email;
+    requires org.jsoup;
     opens org.openjfx to javafx.fxml;
     opens Excel to javafx.base;
     exports org.openjfx;

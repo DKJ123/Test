@@ -4,7 +4,6 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.45), 10, 0.0, 0, 0);
 }
 
-
 #close-button {
     -fx-background-color: rgba(0, 0, 0, 0);
     -fx-background-insets: 0 0 0 0;
@@ -69,41 +68,20 @@
     -fx-background-radius: 0;
 }
 
-#done-button {
-    -fx-background-color: lightgray;
-    -fx-border-color: black;
-    -fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-
-}
-#done-button:hover {
-    -fx-background-color: #dcdcdc;
-    -fx-border-color: black;
-    -fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -fx-effect: innershadow(three-pass-box, #ffffff, 5, 0.0, 0, 0);
-}
-#done-button:pressed {
-    -fx-background-color: #c8c8c8;
-    -fx-border-color: black;
-    -fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -fx-effect: innershadow(three-pass-box, #ffffff, 5, 0.0, 0, 0);
-}
-
 #top-window-menu {
     -fx-background-color: rgb(177, 186, 215);
-    -fx-background-radius: 5 5 0 0;
+    -fx-background-radius: 3 3 0 0;
+    -fx-border-width: 1;
+    -fx-border-color: black;
+    -fx-border-radius: 3 3 0 0;
 }
-#done-button-pane {
-    -fx-background-color: rgb(177, 186, 215);
-    -fx-background-radius: 0 0 5 5;
 
+#contact-main-pane {
+    -fx-background-color: rgb(177, 186, 215);
+    -fx-spacing: 10;
+    -fx-padding: 10;
 }
-#text-area {
-    -fx-border-width: 0 5 0 5;
-    -fx-border-color: rgb(177, 186, 215);
+#send-button-pane {
+    -fx-background-color: rgb(177, 186, 215);
+    -fx-padding: 0 10 0 0;
 }

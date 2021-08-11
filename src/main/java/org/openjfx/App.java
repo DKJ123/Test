@@ -1,5 +1,6 @@
 package org.openjfx;
 
+import Email.ReadEmail;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -87,6 +88,33 @@ public class App extends Application {
 
 
 
+    }
+
+
+    // -- TOP MENU BUTTON ACTIONS --
+    public void topMenuButtonActions(ActionEvent e, Stage stage) {
+        MenuItem menuItem = (MenuItem) e.getSource();
+        String menuItemText = menuItem.getText();
+        Node node = stage.getScene().getFocusOwner();
+        Point2D point = node.localToScreen(0,0);
+
+        NewWindow open = new NewWindow();
+
+
+        if(menuItemText.equals("Settings")) {
+            System.out.println(menuItemText);
+        } else if (menuItemText.equals("Exit")) {
+            System.out.println(menuItemText);
+            stage.close();
+        } else if (menuItemText.equals("About")) {
+            System.out.println(menuItemText);
+        } else if (menuItemText.equals("Contact")) {
+            System.out.println(menuItemText);
+            open.initContactWindow(point);
+        } else if (menuItemText.equals("Support")) {
+            System.out.println(menuItemText);
+            open.initHelpWindow(point);
+        }
     }
 
     // -- BUTTON ACTIONS --
@@ -253,7 +281,14 @@ public class App extends Application {
 
     }
     //-- BOTTOM MENU BUTTON ACTIONS --
-
+    public void mailInboxButtonAction(ActionEvent e, Stage stage) {
+        Node node = stage.getScene().getFocusOwner();
+        Point2D point = node.localToScreen(0,0);
+        NewWindow open = new NewWindow();
+        ReadEmail read = new ReadEmail();
+        List<VBox> vBoxes = read.checkMailInbox();
+        open.initMailInboxWindow(point, vBoxes);
+    }
 
     // -- CHECKBOX ACTIONS --
     public void topFiveCheckboxAction(ActionEvent e, TableView table, CheckBox checkBox, CheckBox checkBoxMulti) {
@@ -643,7 +678,7 @@ public class App extends Application {
         HBox bottomMenu = new HBox();
         bottomMenu.setPrefSize(1280, 50);
         bottomMenu.setId("bottom-bar-menu");
-        bottomMenu.getChildren().addAll(bottomMenuButtonMaxNews, bottomMenuButtonWeekly, bottomMenuButtonDaily);
+        bottomMenu.getChildren().addAll(bottomMenuButtonMaxNews, bottomMenuButtonWeekly, bottomMenuButtonDaily, init.getMailInboxButton());
 
         // HBOX TOPGAP
         HBox topGap = new HBox();

@@ -1,5 +1,6 @@
 package org.openjfx;
 
+import Email.ReadEmail;
 import Excel.CurrentFileValues;
 import Excel.NewFileValues;
 import javafx.collections.FXCollections;
@@ -21,6 +22,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import org.apache.poi.ss.formula.functions.Even;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -58,6 +60,7 @@ public class AppComponents extends App{
     ToggleButton bottomMenuButtonMaxNews;
     ToggleButton bottomMenuButtonWeekly;
     ToggleButton bottomMenuButtonDaily;
+    Button mailInboxButton;
 
     Button closeButton;
     Button maximizeButton;
@@ -67,6 +70,7 @@ public class AppComponents extends App{
     StackPane cross;
     StackPane subMenuButtonPane;
     StackPane box;
+    StackPane mailSymbol;
 
     // -- Labels --
     Label curFileLabel;
@@ -147,6 +151,7 @@ public class AppComponents extends App{
     Rectangle buttonShape = new Rectangle();
     Rectangle rectangle = new Rectangle();
     Rectangle dateMenuShape = new Rectangle();
+    Rectangle mailSquare;
 
     Path p;
 
@@ -157,6 +162,10 @@ public class AppComponents extends App{
     Line maximizeBottomLine;
     Line maximizeRightLine;
     Line maximizeTopLine;
+    // -- mail symbol lines --
+    Path mailPath;
+
+    Circle mailCircle;
 
     // -- Insets --
     Insets leftGap;
@@ -185,6 +194,7 @@ public class AppComponents extends App{
 
 
     public AppComponents(){
+        setShapes();
         setColorpickers();
         setButtons();
         setLabels();
@@ -194,7 +204,6 @@ public class AppComponents extends App{
         setImages();
         setMenu();
         setMenuItems();
-        setShapes();
         setFonts();
         setBackgrounds();
         setBorders();
@@ -432,6 +441,17 @@ public class AppComponents extends App{
         });
         //Action = display daily report editor
 
+        mailInboxButton = new Button();
+        mailInboxButton.setGraphic(getMailSymbol());
+        mailInboxButton.setPrefSize(50, 50);
+        mailInboxButton.setId("mail-inbox-button");
+        mailInboxButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mailInboxButtonAction(event, getPrimaryStage());
+            }
+        });
+
 
         EventHandler<ActionEvent> windowOptions = new EventHandler<ActionEvent>() {
             @Override
@@ -522,6 +542,9 @@ public class AppComponents extends App{
     public Button getMinimizeButton() {
         return minimizeButton;
     }
+    public Button getMailInboxButton() {
+        return mailInboxButton;
+    }
 
 
     // -- STACKPANES SETTERS AND GETTERS --
@@ -538,6 +561,12 @@ public class AppComponents extends App{
         box.setPrefSize(30,30);
         box.getChildren().add(getRectangle());
 
+        StackPane mailShape = new StackPane();
+        mailShape.setPrefSize(30, 20);
+        mailShape.getChildren().addAll(getMailSquare(), getMailPath());
+
+
+        this.mailSymbol = mailShape;
         this.subMenuButtonPane = subMenuButtonPane;
     }
 
@@ -549,6 +578,9 @@ public class AppComponents extends App{
     }
     public StackPane getSubMenuButtonPane() {
         return subMenuButtonPane;
+    }
+    public StackPane getMailSymbol() {
+        return mailSymbol;
     }
 
     // -- LABELS SETTERS AND GETTERS --
@@ -967,12 +999,31 @@ public class AppComponents extends App{
     }
     //-- MENUITEMS --
     public void setMenuItems() {
+
+        EventHandler<ActionEvent> topMenuActions = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                topMenuButtonActions(actionEvent, getPrimaryStage());
+            }
+        };
+
+
         fileItem1 = new MenuItem("Settings");
+        fileItem1.addEventHandler(ActionEvent.ACTION, topMenuActions);
+
         fileItem2 = new MenuItem("Exit");
+        fileItem2.addEventHandler(ActionEvent.ACTION, topMenuActions);
         editItem1 = new MenuItem("Restart application");
+        editItem1.addEventHandler(ActionEvent.ACTION, topMenuActions);
+
         helpItem1 = new MenuItem("About");
+        helpItem1.addEventHandler(ActionEvent.ACTION, topMenuActions);
+
         helpItem2 = new MenuItem("Contact");
+        helpItem2.addEventHandler(ActionEvent.ACTION, topMenuActions);
+
         helpItem3 = new MenuItem("Support");
+        helpItem3.addEventHandler(ActionEvent.ACTION, topMenuActions);
     }
 
     public MenuBar getMenubar() {
@@ -1023,6 +1074,46 @@ public class AppComponents extends App{
         dateMenuShape.setWidth(100);
         dateMenuShape.setArcWidth(5);
         dateMenuShape.setArcHeight(5);
+
+        Rectangle mailSquare = new Rectangle();
+        mailSquare.setHeight(20);
+        mailSquare.setWidth(30);
+        mailSquare.setArcHeight(5);
+        mailSquare.setArcWidth(5);
+        mailSquare.setId("mail-square");
+
+        Path pa = new Path();
+
+        MoveTo mt = new MoveTo();
+        mt.setX(0);
+        mt.setY(0);
+
+        LineTo line1s = new LineTo(15, 14);
+        LineTo line2s = new LineTo(30, 0);
+
+        MoveTo mt1 = new MoveTo();
+        mt1.setX(0);
+        mt1.setY(20);
+
+        LineTo line3s = new LineTo(11, 10);
+
+        MoveTo mt2 = new MoveTo();
+        mt2.setX(30);
+        mt2.setY(20);
+
+        LineTo line4s = new LineTo(19, 10);
+
+        pa.getElements().add(mt);
+        pa.getElements().addAll(line1s, line2s);
+        pa.getElements().add(mt1);
+        pa.getElements().addAll(line3s);
+        pa.getElements().add(mt2);
+        pa.getElements().addAll(line4s);
+
+        Circle circle = new Circle();
+        circle.setRadius(6);
+        circle.setId("mail-circle");
+
 
         Path p = new Path();
 
@@ -1117,7 +1208,10 @@ public class AppComponents extends App{
         this.buttonShape = buttonShape;
         this.rectangle = rectangle;
         this.dateMenuShape = dateMenuShape;
+        this.mailSquare = mailSquare;
         this.p = p;
+        this.mailPath = pa;
+        this.mailCircle = circle;
         this.line1 = line1;
         this.line2 = line2;
         this.minimizeLine = minimizeLine;
@@ -1136,8 +1230,17 @@ public class AppComponents extends App{
     public Rectangle getDateMenuShape() {
         return dateMenuShape;
     }
+    public Rectangle getMailSquare() {
+        return mailSquare;
+    }
     public Path getCubicCurve() {
         return p;
+    }
+    public Path getMailPath() {
+        return mailPath;
+    }
+    public Circle getMailCircle() {
+        return mailCircle;
     }
     public Line getLine1() {
         return line1;

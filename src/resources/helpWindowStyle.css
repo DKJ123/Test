@@ -4,7 +4,6 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.45), 10, 0.0, 0, 0);
 }
 
-
 #close-button {
     -fx-background-color: rgba(0, 0, 0, 0);
     -fx-background-insets: 0 0 0 0;
@@ -69,41 +68,51 @@
     -fx-background-radius: 0;
 }
 
-#done-button {
-    -fx-background-color: lightgray;
-    -fx-border-color: black;
-    -fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-
-}
-#done-button:hover {
-    -fx-background-color: #dcdcdc;
-    -fx-border-color: black;
-    -fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -fx-effect: innershadow(three-pass-box, #ffffff, 5, 0.0, 0, 0);
-}
-#done-button:pressed {
-    -fx-background-color: #c8c8c8;
-    -fx-border-color: black;
-    -fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -fx-effect: innershadow(three-pass-box, #ffffff, 5, 0.0, 0, 0);
-}
-
 #top-window-menu {
     -fx-background-color: rgb(177, 186, 215);
-    -fx-background-radius: 5 5 0 0;
+    -fx-background-radius: 3 3 0 0;
+    -fx-border-width: 1;
+    -fx-border-color: black;
+    -fx-border-radius: 3 3 0 0;
 }
-#done-button-pane {
+#help-side-menu {
     -fx-background-color: rgb(177, 186, 215);
-    -fx-background-radius: 0 0 5 5;
+    -fx-background-radius: 0 0 3 3;
+    -fx-border-width: 0 3 1 1;
+    -fx-border-color: black;
+    -fx-border-radius: 0 0 3 3;
+}
+#help-main-content {
+    -fx-border-color: black;
+    -fx-border-width: 0 1 1 0;
+}
+#help-textarea {
+    -fx-background-color: whitesmoke;
+}
 
+#side-menu-help-button {
+    -fx-background-color: rgb(177, 186, 215);
+    -fx-font-family: Arial, Serif;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
 }
-#text-area {
-    -fx-border-width: 0 5 0 5;
-    -fx-border-color: rgb(177, 186, 215);
+#side-menu-help-button:hover {
+    -fx-background-color: rgb(183, 189, 213);
 }
+#side-menu-help-button:selected {
+    -fx-background-color: rgb(138, 147, 177);
+}
+#side-menu-help-button-small {
+    -fx-background-color: rgb(177, 186, 215);
+    -fx-font-family: Arial, Serif;
+    -fx-font-size: 12;
+    -fx-label-padding: 0 0 0 15;
+}
+#side-menu-help-button-small:hover {
+    -fx-background-color: rgb(183, 189, 213);
+}
+#side-menu-help-button-small:selected {
+    -fx-background-color: rgb(138, 147, 177);
+    -fx-text-fill: white;
+}
+

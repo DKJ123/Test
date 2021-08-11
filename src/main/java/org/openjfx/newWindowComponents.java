@@ -2,23 +2,22 @@ package org.openjfx;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.text.Text;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
 import java.util.List;
 
 public class newWindowComponents extends NewWindow {
@@ -34,8 +33,17 @@ public class newWindowComponents extends NewWindow {
     Button maximizeButton;
     Button minimizeButton;
 
+    // -- BUTTONS IN CONTACT WINDOW --
+    Button sendButton;
+
     // -- BUTTONS IN TEXTAREAWINDOW --
     Button doneButton;
+
+    // -- BUTTONS IN HELPWINDOW --
+    ToggleButton manualModeButtonHelp;
+    ToggleButton automatedModeButtonHelp;
+    ToggleButton copyNpasteButtonHelp;
+    ToggleButton fromExcelButtonHelp;
 
     // -- EVENTHANDLERS --
     EventHandler<ActionEvent> monthButtonAction;
@@ -46,6 +54,38 @@ public class newWindowComponents extends NewWindow {
 
     // -- TEXTAREAS --
     TextArea textArea;
+
+    // -- TEXTAREAS IN HELPWINDOW --
+    TextArea helpTextArea;
+    TextArea automatedModeHelpTextArea;
+    TextArea copyNpasteHelpTextArea;
+    TextArea fromExcelHelpTextArea;
+
+    // -- LABELS IN CONTACTWINDOW --
+    Label mailSentLabel;
+
+    // -- LABELS IN INBOX WINDOW --
+    Label mailFromLabel;
+    Label subjectLabel;
+    Label dateLabel;
+    Label inboxLabel;
+
+    // -- TEXTFIELDS IN CONTACTWINDOW --
+    TextField mailFromField;
+    TextField mailSubject;
+
+    PasswordField mailFromPasswordField;
+
+    // -- TEXTAREA IN CONTACTWINDOW --
+    TextArea messageTextArea;
+    // -- TEXTAREA IN INBOX --
+    TextArea inboxMessage;
+
+    // -- PANE IN CONTACTWINDOW --
+    HBox sendButtonPane;
+
+    // -- VBOX IN HELPWINDOW --
+    VBox leftMenuPane;
 
     // -- IMPORTFIELD --
     TextField importField;
@@ -74,6 +114,8 @@ public class newWindowComponents extends NewWindow {
         setLabels();
         setTableColumns();
         setTextArea();
+        setHelpTextArea();
+        setTextFields();
     }
 
     // -- BUTTON SETTERS AND GETTERS --
@@ -109,6 +151,7 @@ public class newWindowComponents extends NewWindow {
         nextYearButton.addEventFilter(ActionEvent.ACTION, getYearButtonAction());
 
         Button doneButton = new Button("Done");
+        doneButton.setPrefSize(100, 40);
         doneButton.setId("done-button");
         doneButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -148,6 +191,53 @@ public class newWindowComponents extends NewWindow {
         minimizeButton.setId("min-button");
         minimizeButton.addEventHandler(ActionEvent.ACTION, windowOptions);
 
+        // -- HELPWINDOW BUTTONS --
+        EventHandler<ActionEvent> sideMenuButtonEvents = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                sideMenuButtonActions(event, getHelpTextArea(), manualModeText(), copyNpasteText(), fromExcelText(), automatedModeText()
+                , getLeftMenuPane(), getCopyNpasteButtonHelp(), getFromExcelButtonHelp(), getManualModeButtonHelp(), getAutomatedModeButtonHelp());
+            }
+        };
+
+
+        // -- manualModeHelpButton --
+        ToggleButton manualModeHelpButton = new ToggleButton("Manual mode");
+        manualModeHelpButton.setPrefSize(140, 40);
+        manualModeHelpButton.setId("side-menu-help-button");
+        manualModeHelpButton.setAlignment(Pos.CENTER_LEFT);
+        manualModeHelpButton.addEventFilter(ActionEvent.ACTION, sideMenuButtonEvents);
+
+        ToggleButton copyNpasteHelpButton = new ToggleButton("Copy and paste");
+        copyNpasteHelpButton.setPrefSize(140, 25);
+        copyNpasteHelpButton.setId("side-menu-help-button-small");
+        copyNpasteHelpButton.setAlignment(Pos.CENTER_LEFT);
+        copyNpasteHelpButton.addEventFilter(ActionEvent.ACTION, sideMenuButtonEvents);
+
+        ToggleButton fromExcelHelpButton = new ToggleButton("From excel");
+        fromExcelHelpButton.setPrefSize(140, 25);
+        fromExcelHelpButton.setId("side-menu-help-button-small");
+        fromExcelHelpButton.setAlignment(Pos.CENTER_LEFT);
+        fromExcelHelpButton.addEventFilter(ActionEvent.ACTION, sideMenuButtonEvents);
+
+        ToggleButton automatedModeHelpButton = new ToggleButton("Automated mode");
+        automatedModeHelpButton.setPrefSize(140, 40);
+        automatedModeHelpButton.setId("side-menu-help-button");
+        automatedModeHelpButton.setAlignment(Pos.CENTER_LEFT);
+        automatedModeHelpButton.addEventFilter(ActionEvent.ACTION, sideMenuButtonEvents);
+
+        // -- CONTACT WINDOW BUTTONS --
+        // -- SENDBUTTON --
+        Button sendButton = new Button("Send");
+        sendButton.setPrefSize(70, 30);
+        sendButton.setId("send-button");
+        sendButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                sendButtonAction(event, getMailFromField(), getMailSubject(), getMessageTextArea(), getMailSentLabel(), getSendButtonPane());
+            }
+        });
+
         this.nextMonthButton = nextMonthButton;
         this.prevMonthButton = prevMonthButton;
         this.curYearButton = curYearButton;
@@ -157,6 +247,13 @@ public class newWindowComponents extends NewWindow {
         this.closeButton = closeButton;
         this.maximizeButton = maximizeButton;
         this.minimizeButton = minimizeButton;
+
+        this.manualModeButtonHelp = manualModeHelpButton;
+        this.automatedModeButtonHelp = automatedModeHelpButton;
+        this.copyNpasteButtonHelp = copyNpasteHelpButton;
+        this.fromExcelButtonHelp = fromExcelHelpButton;
+
+        this.sendButton = sendButton;
     }
 
     public Button getNextMonthButton() {
@@ -185,6 +282,21 @@ public class newWindowComponents extends NewWindow {
     }
     public Button getMinimizeButton() {
         return minimizeButton;
+    }
+    public ToggleButton getManualModeButtonHelp() {
+        return manualModeButtonHelp;
+    }
+    public ToggleButton getCopyNpasteButtonHelp() {
+        return copyNpasteButtonHelp;
+    }
+    public ToggleButton getFromExcelButtonHelp() {
+        return fromExcelButtonHelp;
+    }
+    public ToggleButton getAutomatedModeButtonHelp() {
+        return automatedModeButtonHelp;
+    }
+    public Button getSendButton() {
+        return sendButton;
     }
 
     // -- EVENTHANDLERS SETTERS AND GETTERS --
@@ -222,11 +334,54 @@ public class newWindowComponents extends NewWindow {
         String output = month.substring(0,1).toUpperCase() + month.substring(1);
         monthLabel.setText(output);
 
+        Label mailSentLabel = new Label("Sending E-mail");
+        mailSentLabel.setId("mail-sent-label");
+
+        Label mailFromLabel = new Label();
+        mailFromLabel.setId("mail-from-label");
+
+        Label subjectLabel = new Label();
+        subjectLabel.setId("subject-label");
+
+        Label dateLabel = new Label();
+        dateLabel.setId("date-label");
+
+        Label inboxLabel = new Label("INBOX");
+        inboxLabel.setId("inbox-label");
+
+        this.inboxLabel = inboxLabel;
+        this.dateLabel = dateLabel;
+        this.mailFromLabel = mailFromLabel;
+        this.subjectLabel = subjectLabel;
+        this.mailSentLabel = mailSentLabel;
         this.monthLabel = monthLabel;
     }
 
     public Label getMonthLabel() {
         return monthLabel;
+    }
+    public Label getMailSentLabel() {
+        return mailSentLabel;
+    }
+    public Label getMailFromLabel() {
+        return mailFromLabel;
+    }
+    public Label getSubjectLabel() {
+        return subjectLabel;
+    }
+    public Label getDateLabel() {
+        return dateLabel;
+    }
+    public Label getInboxLabel() {
+        return inboxLabel;
+    }
+
+    // -- VBOX CONTACTWINDOW SETTER AND GETTER --
+    public void setSendButtonPane(HBox box) {
+        sendButtonPane = box;
+    }
+    public HBox getSendButtonPane() {
+        return sendButtonPane;
     }
 
     // -- TEXTAREAS SETTERS AND GETTERS --
@@ -242,10 +397,61 @@ public class newWindowComponents extends NewWindow {
             }
         });
 
+        TextArea messageTextArea = new TextArea();
+        messageTextArea.setPrefSize(400, 600);
+        messageTextArea.setId("message-textarea");
+
+        TextArea inboxMessageTextArea = new TextArea();
+        inboxMessageTextArea.setPrefSize(450, 550);
+        inboxMessageTextArea.setMinSize(450, 500);
+        inboxMessageTextArea.setMaxSize(1000, 1100);
+        inboxMessageTextArea.setEditable(false);
+        inboxMessageTextArea.setWrapText(true);
+        inboxMessageTextArea.setId("inbox-message-text");
+
+        this.inboxMessage = inboxMessageTextArea;
+        this.messageTextArea = messageTextArea;
         this.textArea = textArea;
     }
     public TextArea getTextArea() {
         return textArea;
+    }
+    public TextArea getMessageTextArea() {
+        return messageTextArea;
+    }
+    public TextArea getInboxMessage() {
+        return inboxMessage;
+    }
+
+    // -- HELP WINDOW TEXT AREAS SETTERS AND GETTERS
+    public void setHelpTextArea() {
+        TextArea helpTextArea = new TextArea();
+        helpTextArea.setText(helpFirstPageText());
+        helpTextArea.setPrefSize(600, 670);
+        helpTextArea.setId("help-textarea");
+
+       //TextArea copyNpasteHelpTextArea = new TextArea();
+       //copyNpasteHelpTextArea.setText(copyNpasteText());
+       //copyNpasteHelpTextArea.setPrefSize(600, 670);
+       //copyNpasteHelpTextArea.setId("help-textarea");
+       //
+       //TextArea fromExcelHelpTextArea = new TextArea();
+       //fromExcelHelpTextArea.setText(fromExcelText());
+       //fromExcelHelpTextArea.setPrefSize(600, 670);
+       //fromExcelHelpTextArea.setId("help-textarea");
+       //
+       //TextArea automatedModeHelpTextArea = new TextArea();
+       //automatedModeHelpTextArea.setText(automatedModeText());
+       //automatedModeHelpTextArea.setPrefSize(600, 670);
+       //automatedModeHelpTextArea.setId("help-textarea");
+
+        this.helpTextArea = helpTextArea;
+        //this.copyNpasteHelpTextArea = copyNpasteHelpTextArea;
+        //this.fromExcelHelpTextArea = fromExcelHelpTextArea;
+        //this.automatedModeHelpTextArea = automatedModeHelpTextArea;
+    }
+    public TextArea getHelpTextArea() {
+        return helpTextArea;
     }
 
     // -- IMPORTFIELD SETTER AND GETTER --
@@ -254,6 +460,33 @@ public class newWindowComponents extends NewWindow {
     }
     public TextField getImportField() {
         return importField;
+    }
+
+    // -- CONTACTWINDOW TEXTFIELD SETTERS AND GETTERS --
+    public void setTextFields() {
+        TextField logInField = new TextField();
+        logInField.setPrefSize(150, 30);
+        logInField.setPromptText("Name");
+        logInField.setId("login-field");
+
+        TextField subjectField = new TextField();
+        subjectField.setPrefSize(400, 30);
+        subjectField.setPromptText("Subject");
+        subjectField.setId("subject-field");
+
+
+        this.mailFromField = logInField;
+        this.mailSubject = subjectField;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+    public TextField getMailFromField() {
+        return mailFromField;
+    }
+    public TextField getMailSubject() {
+        return mailSubject;
     }
 
     // -- TABLECOLUMNS SETTERS AND GETTERS --
@@ -394,10 +627,16 @@ public class newWindowComponents extends NewWindow {
     public void setStage(Stage stage) {
         this.dateStage = stage;
     }
-
-
     public Stage getStage() {
         return dateStage;
+    }
+
+    // -- HELPWINDOW VBOX SETTER AND GETTER --
+    public void setLeftMenuPane(VBox box) {
+        this.leftMenuPane = box;
+    }
+    public VBox getLeftMenuPane() {
+        return leftMenuPane;
     }
 
 
@@ -589,5 +828,43 @@ public class newWindowComponents extends NewWindow {
         table.getItems().clear();
         table.getItems().addAll(firstWeek, secondWeek, thirdWeek, fourthWeek, fifthWeek, sixthWeek);
 
-    } //Dont need the []
+    }
+
+    public String helpFirstPageText() {
+        String text = "Select the function you wish to know more about";
+
+        return text;
+    }
+    public String manualModeText() {
+        String text = "The manual mode requires the user to do some of the work manually\n" + "\n" + "Click on the buttons below *Manual mode* to learn more";
+
+        return text;
+    }
+    public String copyNpasteText() {
+        String text = "In order for this to work, follow these steps:\n" + " - Go to arende.max.se and click on *Avancerad sök*\n" +
+                " - Select *Klagomål* from Kategori\n" + " - Enter the correct time-period, for example: 2021-07-26 to 2021-08-01\n" +
+                " - Click on 'Sök' and wait for the result to load\n" + " - Copy the result excluding the headers, i.e 'Ärendenummer', 'Rubrik' etc\n" +
+                " - Open the program and go to: 'Manual mode' - Copy and paste\n" + " - Paste the copied result into the window that pops up and click 'done'\n" +
+                "\nYou should now see the result in the table under 'New file'";
+
+        return text;
+    }
+    public String fromExcelText() {
+        String text = "In order for this to work, follow these steps:\n" + " - Go to arende.max.se and click on advanced search\n" +
+                " - Under 'Kategori', select 'Klagomål\n" + " - Enter the correct time-period, for example: 2021-07-26 to 2021-08-01\n" +
+                " - Click on 'Sök' and wait for the result to load\n" + " - Click 'Öppna i Excel', open the downloaded file and click 'Yes' on the pop-up alert\n" +
+                " - Then click on 'Enable Editing' and go to 'File'\n" + " - Save the file as an 'Excel Workbook'\n" +
+                " - Open the program and go to 'Manual mode', then click on 'From excel' and open the file you just saved\n" +
+                "\nYou should now the the result in the table under 'New file'";
+
+        return text;
+    }
+    public String automatedModeText() {
+        String text = "In order for this to work, follow these steps:\n" + " - Enter the correct time-period, for example: 2021-07-26 to 2021-08-01\n" +
+                " - Enter your log-in credentials for Max ÄHS\n" + " - Click on 'Generate file'\n" +
+                "\n After the program has finished loading you should see the results in the table under 'New file'\n" +
+                "\n    ***** THIS FUNCTION IS CURRENTLY NOT ACTIVATED *****";
+
+        return text;
+    }
 }
